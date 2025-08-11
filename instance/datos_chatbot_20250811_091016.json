@@ -1,0 +1,644 @@
+[
+  {
+    "id": 1,
+    "consulta": "crear un archivo linux",
+    "respuesta": "dd if=/dev/zero of=/home/appweb/fichero bs=25M count=1",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 2,
+    "consulta": "peso por carpeta",
+    "respuesta": "du -h --max-depth=1 /var/log/backup",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 3,
+    "consulta": "crear un archivo windows",
+    "respuesta": "fsutil file createnew nombre_del_archivo 1073741824",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 4,
+    "consulta": "carpetas compartidas en servidor windows",
+    "respuesta": "net share",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 5,
+    "consulta": "version tomcat conector",
+    "respuesta": "strings /etc/httpd/modules/mod_jk.so |grep -i mod_jk/",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 6,
+    "consulta": "puertos abiertos linux",
+    "respuesta": "ss -tulpn",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 7,
+    "consulta": "ver aplicativos que usan puerto",
+    "respuesta": "lsof -i:25 (25 es el puerto)",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 8,
+    "consulta": "validar config apache",
+    "respuesta": "apachectl configtest",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 9,
+    "consulta": "cambiar la ip del servidor",
+    "respuesta": "vim /etc/sysconfig/network-scripts/ifcfg-ens192 ###### vim /etc/NetworkManager/system-connections/ens192.nmconnection",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 10,
+    "consulta": "reinicio post pase cobralum",
+    "respuesta": "Hebe (asadmin restart-domain http://hebe.pucp.edu.pe:8080/pucpws/procpago/PagosWS?wsdl), Gea (restartall  https://gea.pucp.edu.pe/pucp/vtaitnet/vtwpagcv/vtwpagcv?accion=Preparar&secuencia=235975&idsession=0000iZka4Ud0OEuT3XrbCKxd3Sn:188o8m64k ), plazacv (systemctl restart tomcat     https://campuspsm.pucp.edu.pe/pucp/alquileres/jsp/AccionIngresarPrincipal.jsp)",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 11,
+    "consulta": "validar la fecha de caducidad de un certificado",
+    "respuesta": "openssl x509 -enddate -noout -in \"/etc/pki/tls/private/wildcard/ca.pem\"",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 12,
+    "consulta": "validar la conectividad con el protocolo openssl",
+    "respuesta": "openssl s_client -connect tyche.pucp.edu.pe:443 -tls1_3",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 13,
+    "consulta": "reemplaza palabra (sed)",
+    "respuesta": "sed -i 's/antigua/nueva/g' archivo.txt",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 14,
+    "consulta": "copiar desde linea (sed)",
+    "respuesta": "sed -n '63000,101000p' file.txt > conl.txt",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 15,
+    "consulta": "editar con interfaz gráfica la conexión de red",
+    "respuesta": "nmtui",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 16,
+    "consulta": "reinicio monitor",
+    "respuesta": "sudo systemctl status monitor_log.service",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 19,
+    "consulta": "desarrollador",
+    "respuesta": "Fui desarrollado por Julio Jurado",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 21,
+    "consulta": "versión de java a usar",
+    "respuesta": "alternatives --config java",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 22,
+    "consulta": "conocer el peso de todos los archivos cuyo nombre empiece con localhost",
+    "respuesta": "find . -type f -name 'localhost*' -exec du -ch {} + | grep total | awk '{print $1}'",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 23,
+    "consulta": "código fuente de calixto",
+    "respuesta": "/var/sys/agora/correo/",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 24,
+    "consulta": "comparar 2 archivos en 2 servidores diferentes",
+    "respuesta": "ssh appweb@tyche-ap1 \"cat /etc/cas/config/application.properties\" | diff /etc/cas/config/application.properties -",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 25,
+    "consulta": "phpmyadmin (himeneo y agora)",
+    "respuesta": "vim /etc/httpd/conf.d/phpMyAdmin.conf ####### service httpd restart",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 26,
+    "consulta": "crear un programa como un servicio en redhat",
+    "respuesta": "vim /etc/systemd/system/monitor_log.service",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 27,
+    "consulta": "",
+    "respuesta": "",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 28,
+    "consulta": "agregar espacio momentáneamente en campus virtual",
+    "respuesta": "Organización > Servicios Informáticos > Gestión Google PUCP > Registros > Registrar Excepción",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 29,
+    "consulta": "portal himeneo",
+    "respuesta": "himeneo.pucp.edu.pe/cafeteria/ventas  /var/sys/agora/cafeteria",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 30,
+    "consulta": "proyecto borrado ws",
+    "respuesta": "Servidor: 192.168.13.71 /opt/script_borrado_pucp",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 31,
+    "consulta": "agrega una línea nueva al final de archivo (sed)",
+    "respuesta": "sed -i '$a\\postman6009877@emlmind.com REJECT' access_pucp",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 32,
+    "consulta": "firma digital",
+    "respuesta": "Se realiza con la clave privada luego en el destino se utiliza nuestra clave pública para validar la autenticidad",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 33,
+    "consulta": "cifrado digital",
+    "respuesta": "Se realiza con la llave pública del destino, luego en el destino se utiliza la clave privada propia para obtener el mensaje y validar la confidencialidad",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 34,
+    "consulta": "certificado digital",
+    "respuesta": "un certificado digital es similar a una llave, pero con más información. En esencia, es un documento que contiene una clave pública y otros datos que permiten verificar la identidad de su propietario.   Contiene: Clave pública del titular. Datos de identidad (nombre, organización, dominio web, etc.). Nombre de la Autoridad Certificadora (CA) que lo emitió. Fecha de emisión y expiración. Firma digital de la CA (para verificar su autenticidad).",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 35,
+    "consulta": "matricula idiomas",
+    "respuesta": "https://ares.pucp.edu.pe/pucp/idiomas/idwclave/idwclave?accion=Login",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 36,
+    "consulta": "error cas - shibboleth : no sessions supplied to back channel notification method",
+    "respuesta": "Poner en el .json: \"logoutType\"        : \"FRONT_CHANNEL\", \"logoutUrl\"         : \"https://tyche.pucp.edu.pe/pucp/logout\",",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 37,
+    "consulta": "cambiar para que dionisios apunte  epopeo",
+    "respuesta": "C:\\WeSphere\\AppServer\\profiles\\AppSrv01\\installedApps\\dionisiosCell01\\intranetc1_war.ear.ear\\intranetc1.war\\pucp\\usuarios\\uswlogin\\jsp\\AccionCerrarSesion.jsp",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 38,
+    "consulta": "comando powershell para buscar una cadena (pandora en este ejemplo) de forma recursiva",
+    "respuesta": "Get-ChildItem -Path . -Recurse -File | Select-String -Pattern \"pandora\" | Select-Object -ExpandProperty Path | Get-Unique",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 39,
+    "consulta": "sin permiso para la carpeta compartida windows para pegar archivos",
+    "respuesta": "ir a la ruta compartida click derecho y en Security agregar el permiso Modify al grupo GAccesoDesarrollo o al grupo que pertenezca el usuario",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 40,
+    "consulta": "agregar una ip al firewall para bloquearla",
+    "respuesta": "firewall-cmd --permanent --zone=drop --add-source=52.86.208.153",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 41,
+    "consulta": "validar que la ip esté bloqueada en firewall",
+    "respuesta": "firewall-cmd --list-sources --zone=drop",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 42,
+    "consulta": "quitar una ip del firewall",
+    "respuesta": "firewall-cmd --permanent --zone=drop --remove-source=XXX.XXX.XXX.XXX",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 43,
+    "consulta": "recargar el firewall",
+    "respuesta": "firewall-cmd --reload",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 44,
+    "consulta": "listar el firewall",
+    "respuesta": "firewall-cmd --list-all",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 45,
+    "consulta": "crear un archivo en powershell",
+    "respuesta": "New-Item -Path . -Name \"Dockerfile\" -ItemType \"File\"",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 46,
+    "consulta": "listar los procesos de docker corriendo",
+    "respuesta": "docker ps -a",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 47,
+    "consulta": "detener un proceso de docker",
+    "respuesta": "docker stop <name_process>",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 48,
+    "consulta": "borrar un proceso de docker",
+    "respuesta": "Primero detenerlo con docker stop y luego docker rm <docker_name>",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 49,
+    "consulta": "ejecutar un proceso docker existente en docker-hub",
+    "respuesta": "docker run hello-world",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 50,
+    "consulta": "construir una imagen en docker",
+    "respuesta": "Luego de haber creado el dockerFile se debe ejecutar docker build -t (Nombre de la imagen) . (Lugar donde está el DockerFile)",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 51,
+    "consulta": "una vez creado el contenedor docker con build se ejecuta con run",
+    "respuesta": "docker run mi-imagen-python entonces recién se verá en el docker ps -a",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 52,
+    "consulta": "ejecutar un contenedor que tiene una variable de entorno llamada mensaje en su dockerfile",
+    "respuesta": "docker run -e MENSAJE=\"Hola, Docker !\" mi-imagen-python",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 53,
+    "consulta": "docker volumenes",
+    "respuesta": "Se usan para que se monte un directorio completo dentro de la aplicación de docker con el siguiente comando donde ${pwd} es la ruta del proyecto y :/app es el nombre de la carpeta montada docker run -v ${PWD}:/app mi-imagen-python",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 54,
+    "consulta": "ejecutar un contenedor con volumen y permanezca arriba",
+    "respuesta": "docker run -d -v ${PWD}:/app mi-imagen-python tail -f /dev/null",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 55,
+    "consulta": "tail -f pero en power shell",
+    "respuesta": "Get-Content nombre_del_archivo -Wait -Tail 20",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 56,
+    "consulta": "instalar sqlplus",
+    "respuesta": "instalar estas dos bibliotecas: oracle-instantclient12.2-basic-12.2.0.1.0-1.x86_64.rpm y oracle-instantclient12.2-sqlplus-12.2.0.1.0-1.x86_64.rpm luego si falta una librería instalarla en mi caso faltaba ---- dnf install libnsl",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 57,
+    "consulta": "sqlplus está instalado en tyche-ap1",
+    "respuesta": "a",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 58,
+    "consulta": "nuevo server windows sin conexión rdp",
+    "respuesta": "1.- win + R --> sysdm.cpl / Remoto / Permitir Conexiones remotas a este equipo. 2.- win + R --> firewall.cpl  / Allow an app or  feature thorugh Windows Firewall  / Remote Desktop (Activar las casillas))   3.- Permitir el  Ping : win + R --> wf.msc / Reglas de entrada / File and Printer Sharing (Echo Request - ICMPv4- In)",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 59,
+    "consulta": "cambiar pass usuario administrator windows server",
+    "respuesta": "Si estamos dentro de una máquina virtual hacer ctrl + alt + END (Fn + flecha a la derecha) elegir cambiar contraseña",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 60,
+    "consulta": "git clone",
+    "respuesta": "git clone --branch dev --single-branch ssh://git@gitlab-dti.pucp.edu.pe:2289/aplicaciones-academicas/json-cas6.git pucp-services --> clonamos el código (no hace falta poner un git init porque git ya lo hace con el clone) le ponemos --branch dev para que clone directamente desde dev",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 61,
+    "consulta": "git branch",
+    "respuesta": "git branch -a --> validamos que ramas hay disponibles, previamente hemos creado la rama en el gitlab",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 62,
+    "consulta": "git fetch",
+    "respuesta": "git fetch --> actualizamos las ramas existentes para poder hacer el checkout",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 63,
+    "consulta": "git checkput",
+    "respuesta": "git checkout dev --> Cambiamos a la rama dev",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 64,
+    "consulta": "git add",
+    "respuesta": "git add . --> subiendo todo a la memoria ponerlo listo para hacer el commit",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 65,
+    "consulta": "git commit",
+    "respuesta": "git commit -m \"Mensaje descriptivo\" --> commit",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 66,
+    "consulta": "git push",
+    "respuesta": "git push --> subiendo al gitlab",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 67,
+    "consulta": "entrar a la memcached",
+    "respuesta": "telnet localhost 11211 (desde tyche ap1 o un servidor que tenga instalado el memcached)",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 68,
+    "consulta": "validar los slabs de la memcached",
+    "respuesta": "stats items",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 69,
+    "consulta": "entrar en cada slab (en este caso slab 20) para ver sus ids",
+    "respuesta": "stats cachedump 20 10",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 70,
+    "consulta": "ver el contenido del id del slab de la memcached",
+    "respuesta": "get <ID>",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 71,
+    "consulta": "listar los items dentro de un slab de la memcached",
+    "respuesta": "stats cachedump 21 13 <20=ID DE SLAB><13=Número de líneas máx en el resultado>",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 72,
+    "consulta": "revisar con mailq la lista de correos y se pueden borrar en",
+    "respuesta": "/var/spool/borracola.sh <nombre del remitente>",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 73,
+    "consulta": "versión de tomcat",
+    "respuesta": "cd -- \"$(dirname \"$(find / -type f -name catalina.jar | head -1)\")\" ;java -cp catalina.jar org.apache.catalina.util.ServerInfo    o      /usr/sbin/tomcat version",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 74,
+    "consulta": "ver el contenido de un correo en postfix",
+    "respuesta": "Primero obtener la lista de dominios que tienen correos encolados ejecutando desde /root/scripts/correos_encolados.sh una vez identificado el dominio se ejecuta un mailq | grep nombre_del_correo, luego elegimos el ID que se quiera ver y con el comando postcat de la siguiente manera : postcat -q ID_ELEGIDO",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 75,
+    "consulta": "si se encolan lo correos",
+    "respuesta": "Primero revisar con mailq los remitentes que no sean tipo spam (MAIL DEMON o xxxxx o así) se pueden borrar estos correos con el comando /var/spool/borracol <NOMBRE REMITENTE> y luego validar la cola con /home/appweb/correos_encolados.sh y forzar con /usr/sbin/postqueue -f",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 76,
+    "consulta": "solicitan poder compartir el calendario con cuenta externa",
+    "respuesta": "Se debe a agregar el correo pucp mediante la WorkSpace al grupo calendario-externo@pucp.edu.pe",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 77,
+    "consulta": "borrar todos los correos que están encolados cuyo remitente empiece con x-",
+    "respuesta": "postqueue -p | awk '$7 ~ /^x-/ {print $1}' | tr -d '*' | xargs -I {} postsuper -d {}  -----> tr -d '*' : Elimina cualquier * que pueda estar presente en los IDs  ------->   xargs -I {} postsuper -d {}    :     En lugar de pasar todos los IDs de golpe, los procesa uno por uno, evitando errores",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 78,
+    "consulta": "bloquear un dominio en la workspace",
+    "respuesta": "Apps >> Google Workspace >> Gmail >> Spam, phishing y software malicioso >> Remitentes bloqueados >> Editar >> Crear o Editar una lista existente >> Editar >> Agregar Dirección >> Guardar.",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 79,
+    "consulta": "servidor tomcat apunte a una base de datos",
+    "respuesta": "En el archivo /etc/tomcat/context.xml agregar la referencia a la conexión ubicada en /etc/tomcat/server.xml --> cómo ejemplo se puede tomar el servidor cyrene con rhel9",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 80,
+    "consulta": "falla asteria - asbanc",
+    "respuesta": "Validar en asteria en el Event Viewer los errores puede ser un error de conexión con el usuario sa a la base de datos, se debe reiniciar el equipo para que Asbanc entre a revisar.",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 81,
+    "consulta": "ejecutar tomcat 10 sin modificar las variables de entorno del 9",
+    "respuesta": "Establecer las VdeE temporalmente con: $env:CATALINA_HOME=\"D:\\apache-tomcat-10.1.39\" $env:CATALINA_BASE=\"D:\\apache-tomcat-10.1.39\"",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 82,
+    "consulta": "entrar al manager app de tomcat 10",
+    "respuesta": "Una vez dentro de localhost:8080 (o el puerto que se haya configurado en el server.xml) boton manager app te pedirá el usuario y pass configurado en  tomca-user.xml en este archivo sólo se configura el usuario y password con el rol de esta manera: <user username=\"tomcat\" password=\"tomcat\" roles=\"manager-gui\"/> el rol ya viene configurado en el archivo web.xml del webapps/manager/WEB-INF/web.xml --> le tuve que poner un usuario y pass diferente a otros roles",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 83,
+    "consulta": "descargar el cas 7.2 desde el github en su versión overlay (viene una versión lista para editar con la carpeta src/main)",
+    "respuesta": "git clone -b 7.2 https://github.com/apereo/cas-overlay-template.git --> el 7.2 es el branch que está en el git hub https://github.com/apereo/cas-overlay-template/tree/7.2#",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 84,
+    "consulta": "leer un archivo .so",
+    "respuesta": "sudo yum install -y binutils   / strings /etc/httpd/modules/mod_jk.so |grep -i mod_jk/    -->para saber la versión del connector",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 85,
+    "consulta": "servidor de pruebas de google (comando gam)",
+    "respuesta": "Servidor 192.168.13.70 y 71 ruta: /opt/gam/gamadv-xtd3/ y luego ejecutar el comando https://sites.google.com/view/gam--commands/people/groups",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 86,
+    "consulta": "comando para listar los miembros de los grupos",
+    "respuesta": "./gam print group-members group_ns dti-it-seguridad@pucp.edu.pe",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 87,
+    "consulta": "agregar un correo como manager a una lista de grupos en csv (gam) el archivo tiene que tener como cabecera la palabra email (~email)",
+    "respuesta": "./gam csv gruposdti.csv gam update group ~email add manager direccion-dti@pucp.edu.pe",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 88,
+    "consulta": "listar miembros de un grupo (comando gam)",
+    "respuesta": "./gam print group-members group_ns dti-it-seguridad@pucp.edu.pe",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 89,
+    "consulta": "qué son los slabs de la memcached ?",
+    "respuesta": "Un slab en Memcached es un bloque de memoria donde se almacenan objetos del mismo tamaño. Memcached organiza la memoria en slabs para optimizar la velocidad y evitar fragmentación.  Cuando un nuevo dato (por ejemplo, un TGT de CAS) se guarda en Memcached, se asigna a un slab según su tamaño. Cada slab tiene un tamaño de bloque fijo, y Memcached decide en cuál almacenarlo dependiendo del espacio que necesita.",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 90,
+    "consulta": "cambiar en el cas la ruta de olvidé mi contraseña :",
+    "respuesta": "/usr/share/tomcat/webapps/pucp/WEB-INF/classes/static/c3/js/AccionIngresarOlvidoContrasena.js",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 91,
+    "consulta": "validar en los dns internos",
+    "respuesta": "nslookup zetes.pucp.edu.pe castor.pucp.edu.pe",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 92,
+    "consulta": "validar en los dns externos",
+    "respuesta": "nslookup zetes.pucp.edu.pe dns2.pucp.edu.pe",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 93,
+    "consulta": "generar una clave pública y privada ssh en linux",
+    "respuesta": "ssh-keygen (crea las claves en ~/.ssh/)",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 94,
+    "consulta": "copiar la clave pública ssh en el servidor remoto",
+    "respuesta": "ssh-copy-id appweb@tyche-ap2 (esto copiará la clave pública en el servidor tyche-ap2 en la ruta ~/ssh/autorized_keys)",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 95,
+    "consulta": "En el caso que tomcat haya sido instalado desde la página de tomcat se modifica el tomcat.service sino buscar el tomcat.conf",
+    "respuesta": "Primero buscar dónde está instalado si es que no está en las variables de entorno (si no funciona utilizando simplemente jcmd)  con el siguiente comando: find / -type f -name jcmd 2>/dev/null",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 96,
+    "consulta": "luego para ejecutar el comando head memory jcmd java ya sabiendo el pid que nos dió la consulta del jcmd",
+    "respuesta": "runuser -u tomcat -- /usr/lib/jvm/java-11-openjdk-11.0.23.0.9-3.el9.x86_64/bin/jcmd 2859876 VM.flags",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 97,
+    "consulta": "el segundo paso es ejecutar el comando con la ruta completa para saber la memory heap java para saber el pid",
+    "respuesta": "/usr/lib/jvm/java-17-openjdk-17.0.14.0.7-2.el9.x86_64/bin/jcmd   (o cual haya salido en el comando anterior)",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 98,
+    "consulta": "buscar el tomcat.service para agregar los cambios de la memory heap java",
+    "respuesta": "find / -iname \"tomcat.service\" *",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 99,
+    "consulta": "para agregar la memory heap java en las instalaciones de tomcat que son por dnf o yum se debe modificar en el archivo que posea la variable java_opts en uno de los siguientes archivos /etc/tomcat/tomcat.conf o /etc/sysconfig/tomcat modificandolo así:",
+    "respuesta": "JAVA_OPTS=\"-Xms512m -Xmx2048m -Djavax.sql.DataSource.Factory=org.apache.commons.dbcp.BasicDataSourceFactory\"",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 100,
+    "consulta": "imprimir todos los grupos (comando gam)",
+    "respuesta": "./gam print groups > gruposdti2.csv",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 101,
+    "consulta": "cambios para compilar con java 8 consultasingresoscampus (1)",
+    "respuesta": "en el archivo nbproject/project.properties #platform.active=JDK_1.6 platform.active=default_platform platforms.default_platform.home=/usr/lib/jvm/java-1.8.0-openjdk javac.source=1.8 javac.target=1.8",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 102,
+    "consulta": "cambios para compilar con java 8 consultasingresoscampus (2)",
+    "respuesta": "Instalar ant java-1.8.0-openjdk-devel",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 103,
+    "consulta": "cambiar ambiente en rigel a preproducción",
+    "respuesta": "Abrir la consola >> Resources >> JDBC >> Data sources >> DataSource Rigel >> elegir preproduccion en Component-managed y Container-managed >> Cambiar la URL a jdbc:oracle:oci@preproduccion >> Cambiar EL SSO en el archivo web.xml (C:\\WebSphere\\AppServer\\profiles\\AppSrv01\\installedApps\\rigelCell01\\intranetc1_war.ear.ear\\intranetc1.war\\WEB-INF) pasar de pandora.pucp.edu.pe a tyche.pucp.edu.pe>> Reiniciar con restartall desde powershell",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 104,
+    "consulta": "cambiar ambiente de rigel a producción",
+    "respuesta": "Abrir la consola >> Resources >> JDBC >> Data sources >> DataSource Rigel >> elegir produccion en Component-managed y Container-managed >> Cambiar la URL a jdbc:oracle:oci@pucpurano >> Cambiar EL SSO en el archivo web.xml (C:\\WebSphere\\AppServer\\profiles\\AppSrv01\\installedApps\\rigelCell01\\intranetc1_war.ear.ear\\intranetc1.war\\WEB-INF) pasar de tyche.pucp.edu.pe a pandora.pucp.edu.pe>> Reiniciar con restartall desde powershell",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 105,
+    "consulta": "compilar con java 1.8 con ant consultasingresoscampus (3)",
+    "respuesta": "ant dist",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 106,
+    "consulta": "ver el hostname en un servidor linux",
+    "respuesta": "hostnamectl",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 107,
+    "consulta": "cambiar el hostname en un servidor linux",
+    "respuesta": "hostnamectl set-hostname NUEVO_NOMBRE",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 108,
+    "consulta": "pase en dtibackenddti",
+    "respuesta": "Bajar el war desde el gitlab Aplicaciones administrativas GestionDatosEstudiantiles Pipelines Build /Pipelines click en la flechita hacia abajo,,,en el servidor la ruta/opt/IBM/WebSphere/Liberty/usr/servers/server1/dropins/, no hace falta reiniciar nada",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 109,
+    "consulta": "validar el registro de la llave dkim el servidor dns(para este ejemplo el registro llamado localprep para el dominio pucpprep.edu.pe)",
+    "respuesta": "nslookup -type=TXT localprep._domainkey.pucpprep.edu.pe",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  },
+  {
+    "id": 110,
+    "consulta": "copiar un google drive con el comando gam",
+    "respuesta": "Se debe ingresar al servidor 192.168.13.70 y ejecutar en la ruta: /opt/gam/gamadv-xtd3/ el siguiente comando:  ./gam user griveram@pucp.pe copy drivefile root recursive teamdriveparent \"Unidad Compartida Test\" mergewithparent true verifyorganizer false  ==>  Para esto se ha creado una Unidad Compartida llamada \"Unidad Compartida Test\" y la usuaria a la cual se le va a copiar la información tiene que tener permiso de colaboradora por lo menos en la UC",
+    "fecha_creacion": "2025-08-10 20:26:32"
+  }
+]
