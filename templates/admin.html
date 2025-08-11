@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JulioBot - Panel de Administración</title>
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/@simondmc/popup-js@1.4.3/popup.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Toggle tema -->
+    <button class="theme-toggle" onclick="toggleTheme()">
+        <span id="theme-icon">🌙</span> Tema
+    </button>
+
+    <div class="dashboard">
+        <!-- Header -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; background: var(--bg-secondary); padding: 20px; border-radius: 15px; box-shadow: 0 4px 15px var(--shadow);">
+            <div>
+                <h1 style="margin: 0; color: var(--text-primary);">🤖 JulioBot Admin</h1>
+                <p style="margin: 5px 0 0 0; color: var(--text-secondary);">Panel de administración y estadísticas</p>
+            </div>
+            <div style="display: flex; gap: 10px;">
+                <button class="action-btn" onclick="window.location.href='/'">🏠 Chat</button>
+                <button class="action-btn" onclick="window.location.href='/logout'">🚪 Cerrar Sesión</button>
+            </div>
+        </div>
+
+        <!-- Estadísticas rápidas -->
+        <div class="stats-grid" id="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number" id="total-consultas">-</div>
+                <div class="stat-label">📚 Total Consultas</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="total-interacciones">-</div>
+                <div class="stat-label">💬 Interacciones</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="tasa-exito">-</div>
+                <div class="stat-label">✅ Tasa de Éxito</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="consultas-hoy">-</div>
+                <div class="stat-label">📅 Hoy</div>
+            </div>
+        </div>
+
+        <!-- Gráficos -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px;">
+            <!-- Gráfico de actividad -->
+            <div style="background: var(--bg-secondary); padding: 20px; border-radius: 15px; box-shadow: 0 4px 15px var(--shadow);">
+                <h3 style="margin: 0 0 20px 0; color: var(--text-primary);">📊 Actividad (Últimos 7 días)</h3>
+                <canvas id="activityChart" width="400" height="200"></canvas>
+            </div>
+            
+            <!-- Consultas populares -->
+            <div style="background: var(--bg-secondary); padding: 20px; border-radius: 15px; box-shadow: 0 4px 15px var(--shadow);">
+                <h3 style="margin: 0 0 20px 0; color: var(--text-primary);">🔥 Consultas Populares</h3>
+                <div id="popular-queries" style="max-height: 200px; overflow-y: auto;">
+                    <p style="color: var(--text-secondary);">Cargando...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Controles -->
+        <div style="background: var(--bg-secondary); padding: 20px; border-radius: 15px; box-shadow: 0 4px 15px var(--shadow); margin-bottom: 30px;">
+            <h3 style="margin: 0 0 20px 0; color: var(--text-primary);">🛠️ Acciones Rápidas</h3>
+            <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                <button class="action-btn" onclick="mostrarFormularioAgregar()">➕ Nueva Consulta</button>
+                <button class="action-btn" onclick="exportarDatos()">💾 Exportar Datos</button>
+                <button class="action-btn" onclick="actualizarEstadisticas()">🔄 Actualizar</button>
+                <button class="action-btn" onclick="limpiarEstadisticas()">🗑️ Limpiar Stats</button>
+                <button class="action-btn" onclick="mostrarAPI()">📋 API Docs</button>
+            </div>
+        </div>
+
+        <!-- Lista de consultas -->
+        <div style="background: var(--bg-secondary); padding: 20px; border-radius: 15px; box-shadow: 0 4px 15px var(--shadow);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h3 style="margin: 0; color: var(--text-primary);">📝 Base de Conocimiento</h3>
+                <div style="display: flex; gap: 10px;">
+                    <input type="text" id="search-input" placeholder="🔍 Buscar consultas..." 
+                           style="padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 20px; background: var(--bg-primary); color: var(--text-primary);">
+                    <select id="category-filter" style="padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 8px; background: var(--bg-primary); color: var(--text-primary);">
+                        <option value="">Todas las categorías</option>
+                        <option value="general">General</option>
+                        <option value="technical">Técnico</option>
+                        <option value="help">Ayuda</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div id="consultas-list">
+                <p style="text-align: center; color: var(--text-secondary);">Cargando consultas...</p>
+            </div>
+            
+            <div id="pagination" style="text-align: center; margin-top: 20px;">
+                <!-- Paginación se generará dinámicamente -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Variables globales
+        let currentPopup = null;
+        let currentPage = 1;
+        let currentTheme = localStorage.getItem('theme') || 'light';
+        let statsData = {};
+        let activityChart = null;
+
+        // Inicializar
+        document.documentElement.setAttribute('data-theme', currentTheme);
+        updateThemeIcon();
+
+        document.addEventListener('DOMContentLoaded', function() {
+            cargarEstadisticas();
+            cargarConsultas();
+            configurarBusqueda();
+        });
+
+        // Funciones de tema
+        function toggleTheme() {
+            currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', currentTheme);
+            localStorage.setItem('theme', currentTheme);
+            updateThemeIcon();
+            
+            // Actualizar gráfico si existe
+            if (activityChart) {
+                updateChartTheme();
+            }
+        }
+
+        function updateThemeIcon() {
+            const themeIcon = document.getElementById('theme-icon');
+            themeIcon.textContent = currentTheme === 'light' ? '🌙' : '☀️';
+        }
+
+        // Cargar estadísticas
+        function cargarEstadisticas() {
+            fetch('/api/estadisticas')
+                .then(response => response.json())
+                .then(data => {
+                    statsData = data;
+                    actualizarUI(data);
+                    crearGraficoActividad(data.estadisticas_diarias);
+                    mostrarConsultasPopulares(data.consultas_populares);
+                })
+                .catch(error => {
+                    console.error('Error al cargar estadísticas:', error);
+                    mostrarError('Error al cargar estadísticas');
+                });
+        }
+
+        function actualizarUI(data) {
+            document.getElementById('total-consultas').textContent = data.total_consultas || 0;
+            document.getElementById('total-interacciones').textContent = data.total_interacciones || 0;
+            document.getElementById('tasa-exito').textContent = (data.tasa_exito || 0) + '%';
+            
+            // Calcular consultas de hoy
+            const hoy = data.estadisticas_diarias ? data.estadisticas_diarias[data.estadisticas_diarias.length - 1]?.interacciones || 0 : 0;
+            document.getElementById('consultas-hoy').textContent = hoy;
+        }
+
+        function crearGraficoActividad(datos) {
+            const ctx = document.getElementById('activityChart').getContext('2d');
+            
+            if (activityChart) {
+                activityChart.destroy();
+            }
+
+            const chartColor = currentTheme === 'dark' ? '#e0e0e0' : '#333';
+            const gridColor = currentTheme === 'dark' ? '#444' : '#ddd';
+
+            activityChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: datos.map(d => {
+                        const date = new Date(d.fecha);
+                        return date.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' });
+                    }),
+                    datasets: [{
+                        label: 'Interacciones',
+                        data: datos.map(d => d.interacciones),
+                        borderColor: '#4CAF50',
+                        backgroundColor: 'rgba(76, 175, 80, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointBackgroundColor: '#4CAF50',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                        pointRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                color: chartColor,
+                                stepSize: 1
+                            },
+                            grid: {
+                                color: gridColor
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: chartColor
+                            },
+                            grid: {
+                                color: gridColor
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateChartTheme() {
+            if (!activityChart) return;
+            
+            const chartColor = currentTheme === 'dark' ? '#e0e0e0' : '#333';
+            const gridColor = currentTheme === 'dark' ? '#444' : '#ddd';
+            
+            activityChart.options.scales.y.ticks.color = chartColor;
+            activityChart.options.scales.y.grid.color = gridColor;
+            activityChart.options.scales.x.ticks.color = chartColor;
+            activityChart.options.scales.x.grid.color = gridColor;
+            
+            activityChart.update();
+        }
+
+        function mostrarConsultasPopulares(consultas) {
+            const container = document.getElementById('popular-queries');
+            
+            if (!consultas || consultas.length === 0) {
+                container.innerHTML = '<p style="color: var(--text-secondary);">No hay datos disponibles</p>';
+                return;
+            }
+
+            const html = consultas.map((consulta, index) => `
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border-color);">
+                    <div style="flex: 1;">
+                        <span style="color: var(--primary-color); font-weight: bold; margin-right: 8px;">#${index + 1}</span>
+                        <span style="color: var(--text-primary);">${consulta.consulta}</span>
+                    </div>
+                    <span style="background: var(--primary-color); color: white; padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: bold;">
+                        ${consulta.count}
+                    </span>
+                </div>
+            `).join('');
+
+            container.innerHTML = html;
+        }
+
+        // Cargar consultas
+        function cargarConsultas(page = 1) {
+            const categoria = document.getElementById('category-filter').value;
+            const url = `/api/consultas?page=${page}&per_page=10${categoria ? '&categoria=' + categoria : ''}`;
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    mostrarConsultas(data.consultas);
+                    crearPaginacion(data.pages, data.current_page);
+                })
+                .catch(error => {
+                    console.error('Error al cargar consultas:', error);
+                    mostrarError('Error al cargar consultas');
+                });
+        }
+
+        function mostrarConsultas(consultas) {
+            const list = document.getElementById('consultas-list');
+            
+            if (!consultas || consultas.length === 0) {
+                list.innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: 20px;">No se encontraron consultas</p>';
+                return;
+            }
+
+            const html = consultas.map(item => `
+                <div style="background: var(--bg-primary); margin-bottom: 15px; padding: 20px; border-radius: 12px; border-left: 4px solid var(--primary-color);">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
+                        <div style="flex: 1;">
+                            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                                <strong style="color: var(--text-primary);">ID: ${item.id}</strong>
+                                <span style="background: var(--primary-color); color: white; padding: 2px 8px; border-radius: 10px; font-size: 11px;">
+                                    ${item.categoria || 'general'}
+                                </span>
+                                <span style="color: var(--text-secondary); font-size: 12px;">
+                                    ${new Date(item.fecha_creacion).toLocaleDateString()}
+                                </span>
+                            </div>
+                            <div style="color: var(--text-primary); margin-bottom: 8px;">
+                                <strong>Consulta:</strong> ${item.consulta}
+                            </div>
+                            <div style="color: var(--text-secondary); font-size: 14px;">
+                                <strong>Respuesta:</strong> ${item.respuesta.substring(0, 200)}${item.respuesta.length > 200 ? '...' : ''}
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 8px; margin-left: 15px;">
+                            <button onclick="editarConsulta(${item.id}, '${item.consulta.replace(/'/g, "\\'")}', '${item.respuesta.replace(/'/g, "\\'")}', '${item.categoria || 'general'}')" 
+                                    style="background: var(--secondary-color); color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 12px;">
+                                ✏️ Editar
+                            </button>
+                            <button onclick="eliminarConsulta(${item.id})" 
+                                    style="background: #e74c3c; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 12px;">
+                                🗑️ Eliminar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            list.innerHTML = html;
+        }
+
+        function crearPaginacion(totalPages, currentPageNum) {
+            currentPage = currentPageNum;
+            const container = document.getElementById('pagination');
+            
+            if (totalPages <= 1) {
+                container.innerHTML = '';
+                return;
+            }
+
+            let html = '<div style="display: flex; justify-content: center; gap: 5px; align-items: center;">';
+            
+            // Botón anterior
+            if (currentPageNum > 1) {
+                html += `<button onclick="cargarConsultas(${currentPageNum - 1})" class="action-btn">← Anterior</button>`;
+            }
+
+            // Números de página
+            for (let i = Math.max(1, currentPageNum - 2); i <= Math.min(totalPages, currentPageNum + 2); i++) {
+                if (i === currentPageNum) {
+                    html += `<button class="action-btn" style="background: var(--primary-color); color: white;">${i}</button>`;
+                } else {
+                    html += `<button onclick="cargarConsultas(${i})" class="action-btn">${i}</button>`;
+                }
+            }
+
+            // Botón siguiente
+            if (currentPageNum < totalPages) {
+                html += `<button onclick="cargarConsultas(${currentPageNum + 1})" class="action-btn">Siguiente →</button>`;
+            }
+
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        // Configurar búsqueda
+        function configurarBusqueda() {
+            const searchInput = document.getElementById('search-input');
+            const categoryFilter = document.getElementById('category-filter');
+
+            let searchTimeout;
+            searchInput.addEventListener('input', function() {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    filtrarConsultas();
+                }, 500);
+            });
+
+            categoryFilter.addEventListener('change', function() {
+                cargarConsultas(1);
+            });
+        }
+
+        function filtrarConsultas() {
+            const searchTerm = document.getElementById('search-input').value.toLowerCase();
+            const consultaElements = document.querySelectorAll('#consultas-list > div');
+
+            consultaElements.forEach(element => {
+                const text = element.textContent.toLowerCase();
+                if (text.includes(searchTerm)) {
+                    element.style.display = 'block';
+                } else {
+                    element.style.display = 'none';
+                }
+            });
+        }
+
+        // Funciones CRUD
+        function mostrarFormularioAgregar() {
+            if (currentPopup) currentPopup.close();
+
+            currentPopup = new Popup({
+                title: "➕ Nueva Consulta",
+                content: `
+                    <div style="padding: 20px;">
+                        <div class="form-group">
+                            <label>Consulta:</label>
+                            <input type="text" id="nueva-consulta" placeholder="Escribe la consulta..." style="width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px;"/>
+                        </div>
+                        <div class="form-group">
+                            <label>Respuesta:</label>
+                            <textarea id="nueva-respuesta" placeholder="Escribe la respuesta..." rows="4" style="width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; resize: vertical;"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Categoría:</label>
+                            <input type="text" id="nueva-categoria" placeholder="general" value="general" style="width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px;"/>
+                        </div>
+                        <button onclick="crearConsulta()" style="width: 100%; padding: 12px; background: #4CAF50; color: white; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; margin: 10px 0;">
+                            ✅ Crear Consulta
+                        </button>
+                        <p id="crear-mensaje" style="text-align: center; margin: 10px 0;"></p>
+                    </div>
+                `,
+                events: {
+                    onClose: function() { currentPopup = null; }
+                }
+            });
+            currentPopup.show();
+        }
+
+        function crearConsulta() {
+            const consulta = document.getElementById('nueva-consulta').value.trim();
+            const respuesta = document.getElementById('nueva-respuesta').value.trim();
+            const categoria = document.getElementById('nueva-categoria').value.trim() || 'general';
+            const mensaje = document.getElementById('crear-mensaje');
+
+            if (!consulta || !respuesta) {
+                mensaje.innerHTML = '<span style="color: #e74c3c;">⚠️ Todos los campos son obligatorios</span>';
+                return;
+            }
+
+            fetch('/api/consultas', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ consulta, respuesta, categoria })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    mensaje.innerHTML = `<span style="color: #e74c3c;">❌ ${data.error}</span>`;
+                } else {
+                    mensaje.innerHTML = '<span style="color: #27ae60;">✅ Consulta creada exitosamente</span>';
+                    setTimeout(() => {
+                        currentPopup.close();
+                        cargarConsultas(currentPage);
+                        cargarEstadisticas();
+                    }, 1500);
+                }
+            })
+            .catch(error => {
+                mensaje.innerHTML = '<span style="color: #e74c3c;">❌ Error al crear consulta</span>';
+            });
+        }
+
+        function editarConsulta(id, consulta, respuesta, categoria) {
+            if (currentPopup) currentPopup.close();
+
+            currentPopup = new Popup({
+                title: "✏️ Editar Consulta",
+                content: `
+                    <div style="padding: 20px;">
+                        <input type="hidden" id="edit-id" value="${id}">
+                        <div class="form-group">
+                            <label>Consulta:</label>
+                            <input type="text" id="edit-consulta" value="${consulta}" style="width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px;"/>
+                        </div>
+                        <div class="form-group">
+                            <label>Respuesta:</label>
+                            <textarea id="edit-respuesta" rows="4" style="width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; resize: vertical;">${respuesta}</textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Categoría:</label>
+                            <input type="text" id="edit-categoria" value="${categoria}" style="width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px;"/>
+                        </div>
+                        <button onclick="actualizarConsulta()" style="width: 100%; padding: 12px; background: #007bff; color: white; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; margin: 10px 0;">
+                            💾 Guardar Cambios
+                        </button>
+                        <p id="edit-mensaje" style="text-align: center; margin: 10px 0;"></p>
+                    </div>
+                `,
+                events: {
+                    onClose: function() { currentPopup = null; }
+                }
+            });
+            currentPopup.show();
+        }
+
+        function actualizarConsulta() {
+            const id = document.getElementById('edit-id').value;
+            const consulta = document.getElementById('edit-consulta').value.trim();
+            const respuesta = document.getElementById('edit-respuesta').value.trim();
+            const categoria = document.getElementById('edit-categoria').value.trim();
+            const mensaje = document.getElementById('edit-mensaje');
+
+            if (!consulta || !respuesta) {
+                mensaje.innerHTML = '<span style="color: #e74c3c;">⚠️ Todos los campos son obligatorios</span>';
+                return;
+            }
+
+            fetch(`/api/consultas/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ consulta, respuesta, categoria })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    mensaje.innerHTML = `<span style="color: #e74c3c;">❌ ${data.error}</span>`;
+                } else {
+                    mensaje.innerHTML = '<span style="color: #27ae60;">✅ Consulta actualizada exitosamente</span>';
+                    setTimeout(() => {
+                        currentPopup.close();
+                        cargarConsultas(currentPage);
+                        cargarEstadisticas();
+                    }, 1500);
+                }
+            })
+            .catch(error => {
+                mensaje.innerHTML = '<span style="color: #e74c3c;">❌ Error al actualizar consulta</span>';
+            });
+        }
+
+        function eliminarConsulta(id) {
+            if (!confirm('¿Estás seguro de que quieres eliminar esta consulta? Esta acción no se puede deshacer.')) {
+                return;
+            }
+
+            fetch(`/api/consultas/${id}`, {
+                method: 'DELETE'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    mostrarError(data.error);
+                } else {
+                    mostrarExito('Consulta eliminada exitosamente');
+                    cargarConsultas(currentPage);
+                    cargarEstadisticas();
+                }
+            })
+            .catch(error => {
+                mostrarError('Error al eliminar consulta');
+            });
+        }
+
+        // Funciones de utilidad
+        function actualizarEstadisticas() {
+            cargarEstadisticas();
+            mostrarExito('Estadísticas actualizadas');
+        }
+
+        function limpiarEstadisticas() {
+            if (!confirm('¿Estás seguro de que quieres limpiar las estadísticas? Esta acción no se puede deshacer.')) {
+                return;
+            }
+            // Implementar limpieza de estadísticas si es necesario
+            mostrarExito('Funcionalidad pendiente de implementar');
+        }
+
+        function exportarDatos() {
+            fetch('/api/consultas?per_page=1000')
+                .then(response => response.json())
+                .then(data => {
+                    const csvContent = "ID,Consulta,Respuesta,Categoria,Fecha\n" + 
+                        data.consultas.map(c => 
+                            `${c.id},"${c.consulta}","${c.respuesta}","${c.categoria}","${c.fecha_creacion}"`
+                        ).join('\n');
+                    
+                    const blob = new Blob([csvContent], { type: 'text/csv' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `juliobot-data-${new Date().toISOString().split('T')[0]}.csv`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                    mostrarExito('Datos exportados exitosamente');
+                })
+                .catch(error => {
+                    mostrarError('Error al exportar datos');
+                });
+        }
+
+        function mostrarAPI() {
+            if (currentPopup) currentPopup.close();
+
+            currentPopup = new Popup({
+                title: "📋 API REST - Documentación",
+                content: `
+                    <div style="padding: 20px; max-height: 400px; overflow-y: auto;">
+                        <h3>🔗 Endpoints Disponibles</h3>
+                        
+                        <div style="margin: 15px 0; padding: 15px; background: #f8f9fa; border-left: 4px solid #007bff; border-radius: 8px;">
+                            <h4 style="color: #007bff; margin: 0 0 10px 0;">GET /api/consultas</h4>
+                            <p><strong>Descripción:</strong> Obtener todas las consultas (paginado)</p>
+                            <p><strong>Parámetros:</strong></p>
+                            <ul>
+                                <li><code>page</code> - Número de página (default: 1)</li>
+                                <li><code>per_page</code> - Items por página (default: 10)</li>
+                                <li><code>categoria</code> - Filtrar por categoría</li>
+                            </ul>
+                        </div>
+
+                        <div style="margin: 15px 0; padding: 15px; background: #f8f9fa; border-left: 4px solid #28a745; border-radius: 8px;">
+                            <h4 style="color: #28a745; margin: 0 0 10px 0;">POST /api/consultas</h4>
+                            <p><strong>Descripción:</strong> Crear nueva consulta</p>
+                            <p><strong>Body (JSON):</strong></p>
+                            <pre style="background: #e9ecef; padding: 10px; border-radius: 4px; font-size: 12px;">{
+  "consulta": "string",
+  "respuesta": "string", 
+  "categoria": "string" (opcional)
+}</pre>
+                        </div>
+
+                        <div style="margin: 15px 0; padding: 15px; background: #f8f9fa; border-left: 4px solid #ffc107; border-radius: 8px;">
+                            <h4 style="color: #ffc107; margin: 0 0 10px 0;">PUT /api/consultas/{id}</h4>
+                            <p><strong>Descripción:</strong> Actualizar consulta existente</p>
+                            <p><strong>Body (JSON):</strong> Mismo formato que POST</p>
+                        </div>
+
+                        <div style="margin: 15px 0; padding: 15px; background: #f8f9fa; border-left: 4px solid #dc3545; border-radius: 8px;">
+                            <h4 style="color: #dc3545; margin: 0 0 10px 0;">DELETE /api/consultas/{id}</h4>
+                            <p><strong>Descripción:</strong> Eliminar consulta</p>
+                        </div>
+
+                        <div style="margin: 15px 0; padding: 15px; background: #f8f9fa; border-left: 4px solid #17a2b8; border-radius: 8px;">
+                            <h4 style="color: #17a2b8; margin: 0 0 10px 0;">GET /api/estadisticas</h4>
+                            <p><strong>Descripción:</strong> Obtener estadísticas de uso</p>
+                            <p><strong>Respuesta incluye:</strong> Total consultas, interacciones, tasa éxito, consultas populares, actividad diaria</p>
+                        </div>
+
+                        <div style="margin-top: 20px; padding: 15px; background: #e7f3ff; border: 1px solid #b3d9ff; border-radius: 8px;">
+                            <h4>🔐 Autenticación</h4>
+                            <p>Todos los endpoints de la API requieren autenticación. Asegúrate de estar logueado antes de realizar peticiones.</p>
+                        </div>
+
+                        <div style="margin-top: 15px; padding: 15px; background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 8px;">
+                            <h4>💡 Ejemplo de uso</h4>
+                            <pre style="background: #f8f9fa; padding: 10px; border-radius: 4px; font-size: 11px;">// JavaScript
+fetch('/api/consultas', {
+  method: 'POST',
+  headers: {'Content-Type': 'application/json'},
+  body: JSON.stringify({
+    consulta: 'como crear archivo',
+    respuesta: 'Usa touch filename.txt',
+    categoria: 'technical'
+  })
+})</pre>
+                        </div>
+                    </div>
+                `,
+                events: {
+                    onClose: function() { currentPopup = null; }
+                }
+            });
+            currentPopup.show();
+        }
+
+        function mostrarExito(mensaje) {
+            const div = document.createElement('div');
+            div.style.cssText = `
+                position: fixed;
+                top: 80px;
+                right: 20px;
+                background: #27ae60;
+                color: white;
+                padding: 12px 20px;
+                border-radius: 8px;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+                z-index: 10000;
+                animation: slideIn 0.3s ease;
+            `;
+            div.textContent = '✅ ' + mensaje;
+            document.body.appendChild(div);
+
+            setTimeout(() => {
+                div.style.animation = 'fadeOut 0.3s ease';
+                setTimeout(() => div.remove(), 300);
+            }, 3000);
+        }
+
+        function mostrarError(mensaje) {
+            const div = document.createElement('div');
+            div.style.cssText = `
+                position: fixed;
+                top: 80px;
+                right: 20px;
+                background: #e74c3c;
+                color: white;
+                padding: 12px 20px;
+                border-radius: 8px;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+                z-index: 10000;
+                animation: slideIn 0.3s ease;
+            `;
+            div.textContent = '❌ ' + mensaje;
+            document.body.appendChild(div);
+
+            setTimeout(() => {
+                div.style.animation = 'fadeOut 0.3s ease';
+                setTimeout(() => div.remove(), 300);
+            }, 4000);
+        }
+
+        // Añadir estilos CSS para animaciones de notificaciones
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fadeOut {
+                from { opacity: 1; transform: translateX(0); }
+                to { opacity: 0; transform: translateX(100px); }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

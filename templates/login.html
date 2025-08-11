@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JulioBot - Iniciar Sesión</title>
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <!-- Toggle tema oscuro/claro -->
+    <button class="theme-toggle" onclick="toggleTheme()">
+        <span id="theme-icon">🌙</span> Tema
+    </button>
+
+    <div class="login-container">
+        <form class="login-form" id="loginForm">
+            <div style="text-align: center; margin-bottom: 30px;">
+                <div style="font-size: 48px; margin-bottom: 10px;">🤖</div>
+                <h2>JulioBot Admin</h2>
+                <p style="color: var(--text-secondary); font-size: 14px;">
+                    Accede al panel de administración
+                </p>
+            </div>
+
+            {% if error %}
+                <div class="error-message">
+                    ❌ {{ error }}
+                </div>
+            {% endif %}
+
+            <div id="loginError" class="error-message" style="display: none;"></div>
+            <div id="loginSuccess" style="color: #27ae60; text-align: center; margin-bottom: 15px; font-size: 14px; display: none;"></div>
+
+            <div class="form-group">
+                <label for="username">👤 Usuario:</label>
+                <input type="text" id="username" name="username" required 
+                       placeholder="Ingresa tu usuario" autocomplete="username">
+            </div>
+
+            <div class="form-group">
+                <label for="password">🔒 Contraseña:</label>
+                <input type="password" id="password" name="password" required 
+                       placeholder="Ingresa tu contraseña" autocomplete="current-password">
+            </div>
+
+            <button type="submit" class="login-btn" id="loginBtn">
+                <span id="loginText">🚀 Iniciar Sesión</span>
+                <span id="loginSpinner" class="spinner" style="display: none; margin-left: 10px;"></span>
+            </button>
+
+            <div style="text-align: center; margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border-color);">
+                <a href="/" style="color: var(--primary-color); text-decoration: none; font-size: 14px;">
+                    ← Volver al Chat
+                </a>
+            </div>
+
+            <div style="text-align: center; margin-top: 15px; font-size: 12px; color: var(--text-secondary);">
+                <p>Credenciales por defecto: <code>admin</code> / <code>admin</code></p>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Variables globales
+        let currentTheme = localStorage.getItem('theme') || 'light';
+
+        // Inicializar tema
+        document.documentElement.setAttribute('data-theme', currentTheme);
+        updateThemeIcon();
+
+        // Funciones de tema
+        function toggleTheme() {
+            currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', currentTheme);
+            localStorage.setItem('theme', currentTheme);
+            updateThemeIcon();
+        }
+
+        function updateThemeIcon() {
+            const themeIcon = document.getElementById('theme-icon');
+            themeIcon.textContent = currentTheme === 'light' ? '🌙' : '☀️';
+        }
+
+        // Manejo del formulario
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const loginBtn = document.getElementById('loginBtn');
+            const loginText = document.getElementById('loginText');
+            const loginSpinner = document.getElementById('loginSpinner');
+            const errorDiv = document.getElementById('loginError');
+            const successDiv = document.getElementById('loginSuccess');
+
+            // Validaciones básicas
+            if (!username || !password) {
+                showError('Por favor, completa todos los campos');
+                return;
+            }
+
+            // Mostrar estado de carga
+            loginBtn.disabled = true;
+            loginText.style.display = 'none';
+            loginSpinner.style.display = 'inline-block';
+            errorDiv.style.display = 'none';
+            successDiv.style.display = 'none';
+
+            // Enviar petición
+            fetch('/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    username: username,
+                    password: password
+                }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showSuccess('✅ Login exitoso. Redirigiendo...');
+                    setTimeout(() => {
+                        window.location.href = '/admin';
+                    }, 1500);
+                } else {
+                    showError(data.message || 'Credenciales incorrectas');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showError('Error de conexión. Inténtalo de nuevo.');
+            })
+            .finally(() => {
+                // Restaurar estado del botón
+                setTimeout(() => {
+                    loginBtn.disabled = false;
+                    loginText.style.display = 'inline';
+                    loginSpinner.style.display = 'none';
+                }, 1000);
+            });
+        });
+
+        function showError(message) {
+            const errorDiv = document.getElementById('loginError');
+            errorDiv.textContent = '❌ ' + message;
+            errorDiv.style.display = 'block';
+            
+            // Shake animation
+            errorDiv.style.animation = 'bounce 0.5s';
+            setTimeout(() => {
+                errorDiv.style.animation = '';
+            }, 500);
+        }
+
+        function showSuccess(message) {
+            const successDiv = document.getElementById('loginSuccess');
+            successDiv.textContent = message;
+            successDiv.style.display = 'block';
+        }
+
+        // Enter key handler
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                document.getElementById('loginForm').dispatchEvent(new Event('submit'));
+            }
+        });
+
+        // Focus en el primer campo al cargar
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('username').focus();
+        });
+
+        // Validación en tiempo real
+        document.getElementById('username').addEventListener('input', function() {
+            this.setCustomValidity('');
+            if (this.value.length < 2) {
+                this.setCustomValidity('El usuario debe tener al menos 2 caracteres');
+            }
+        });
+
+        document.getElementById('password').addEventListener('input', function() {
+            this.setCustomValidity('');
+            if (this.value.length < 2) {
+                this.setCustomValidity('La contraseña debe tener al menos 2 caracteres');
+            }
+        });
+    </script>
+</body>
+</html>
