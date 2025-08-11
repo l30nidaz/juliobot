@@ -1,7 +1,7 @@
 # Requerimientos para JulioBot - Chatbot con Flask
 Flask==2.3.3
-setuptools>=65.0.0 
-wheel
+setuptools>=68.0.0
+wheel>=0.41.0
 Flask-SQLAlchemy==3.0.5
 Flask-CORS==4.0.0
 SQLAlchemy==2.0.21
@@ -12,3 +12,6 @@ Jinja2==3.1.2
 itsdangerous==2.1.2
 click==8.1.7
 blinker==1.6.3
+pip>=23.0.0
+Django>=4.2.0
+gunicorn>=21.0.0
