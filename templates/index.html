@@ -415,8 +415,10 @@
                     document.getElementById('nuevaCategoria').value = 'general';
                     
                     setTimeout(() => {
-                        myPopup.close();
-                    }, 1500);
+						if (myPopup && typeof myPopup.hide === "function") {
+							myPopup.hide();
+						}
+					}, 1500);
                 }
             })
             .catch(error => {
